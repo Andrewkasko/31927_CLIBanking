@@ -61,8 +61,15 @@ namespace DotNetAssignment1_31927
                 if (loginUserInputs[0].CompareTo("Andrew") == 0 && loginUserInputs[1].CompareTo("Password") == 0)
                 {
 
-                    WriteAt("Valid Credentials", startCol, noLines + 2);
-                    Console.ReadKey();
+                    WriteAt("Valid Credentials!... Please press enter", startCol, noLines + 2);
+                   // Console.ReadKey();
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                    if (keyInfo.Key == ConsoleKey.Enter)
+                    {
+                        
+                        //Here is your enter key pressed!
+                        MainScreen(13, 40, 2, 10);
+                    }
                     break;
                 }
                 else
@@ -73,7 +80,196 @@ namespace DotNetAssignment1_31927
             Console.ReadKey();
         }
 
-        public void MainScreen(int noLines, int formWidth, int startRow, int startCol) { 
+
+        public void HomeScreen(int noLines, int formWidth, int startRow, int startCol) {
+
+            Console.Clear();
+            origRow = Console.CursorTop;
+            origCol = Console.CursorLeft;
+
+            for (int line = 0; line < noLines; line++)
+            {
+                if (line == 0 | line == 2 | line == (noLines - 1))
+                {
+                    for (int col = 0; col < formWidth; col++)
+                    {
+                        WriteAt("-", startCol + col, startRow + line);
+
+                    }
+                }
+                else
+                {
+                    WriteAt("|", startCol, startRow + line);
+                    WriteAt("|", startCol + formWidth - 1, startRow + line);
+                }
+            }
+            WriteAt("Welcome to My Bank", startCol + 10, startRow + 1);
+            WriteAt("Login To Start", startCol + 10, startRow + 4);
+
+        }
+
+
+
+        //MAIN SCREEN
+        public void MainScreen(int noLines, int formWidth, int startRow, int startCol) {
+
+            Console.Clear();
+            origRow = Console.CursorTop;
+            origCol = Console.CursorLeft;
+
+            for (int line = 0; line < noLines; line++)
+            {
+                if (line == 0 | line == 2 | line == 10 | line == 12 | line == (noLines - 1))
+                {
+                    for (int col = 0; col < formWidth; col++)
+                    {
+                        WriteAt("-", startCol + col, startRow + line);
+
+                    }
+                }
+                else
+                {
+                    WriteAt("|", startCol, startRow + line);
+                    WriteAt("|", startCol + formWidth - 1, startRow + line);
+                }
+            }
+            WriteAt("WELCOME TO SIMPLE BANKING SYSTEM", startCol + 4, startRow + 1);
+            WriteAt("1. Create a new account", startCol + 6, startRow + 3);
+            WriteAt("2. Search for an account", startCol + 6, startRow + 4);
+            WriteAt("3. Deposit", startCol + 6, startRow + 5);
+            WriteAt("4. Withdraw", startCol + 6, startRow + 6);
+            WriteAt("5. A/C statement", startCol + 6, startRow + 7);
+            WriteAt("6. Delete account", startCol + 6, startRow + 8);
+            WriteAt("7. Exit", startCol + 6, startRow + 9);
+            WriteAt("Enter your choice (1-7): ", startCol + 4, startRow + 11);
+            //Console.ReadKey();
+            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+            switch (keyInfo.Key) { 
+                case ConsoleKey.D1:
+                    CreateNewAccountScreen(11, 40, 2, 10);
+                    break;
+                case ConsoleKey.D2:
+                    SearchAccountScreen(7, 40, 2, 10);
+                    break;
+                case ConsoleKey.D3:
+                    DepositScreen(8, 40, 2, 10);
+                    break;
+                case ConsoleKey.D4:
+                    break;
+                case ConsoleKey.D5:
+                    break;
+                case ConsoleKey.D6:
+                    break;
+                case ConsoleKey.D7:
+                    Environment.Exit(0);
+                    break;
+                default:
+                    break;
+
+            }
+
+            if (keyInfo.Key == ConsoleKey.Enter)
+            {
+
+                MainScreen(13, 40, 2, 10);  
+            }
+        }
+
+
+        public void CreateNewAccountScreen(int noLines, int formWidth, int startRow, int startCol)
+        {
+
+            Console.Clear();
+            origRow = Console.CursorTop;
+            origCol = Console.CursorLeft;
+
+            for (int line = 0; line < noLines; line++)
+            {
+                if (line == 0 | line == 2 | line == 10 | line == (noLines - 1))
+                {
+                    for (int col = 0; col < formWidth; col++)
+                    {
+                        WriteAt("-", startCol + col, startRow + line);
+
+                    }
+                }
+                else
+                {
+                    WriteAt("|", startCol, startRow + line);
+                    WriteAt("|", startCol + formWidth - 1, startRow + line);
+                }
+            }
+            WriteAt("CREATE A NEW ACCOUNT", startCol + 4, startRow + 1);
+            WriteAt("ENTER THE DETAILS", startCol + 6, startRow + 3);
+            WriteAt("First Name: ", startCol + 6, startRow + 5);
+            WriteAt("Last Name: ", startCol + 6, startRow + 6);
+            WriteAt("Address: ", startCol + 6, startRow + 7);
+            WriteAt("Phone: ", startCol + 6, startRow + 8);
+            WriteAt("Email: ", startCol + 6, startRow + 9);
+            Console.ReadKey();
+
+        }
+
+        public void SearchAccountScreen(int noLines, int formWidth, int startRow, int startCol)
+        {
+
+            Console.Clear();
+            origRow = Console.CursorTop;
+            origCol = Console.CursorLeft;
+
+            for (int line = 0; line < noLines; line++)
+            {
+                if (line == 0 | line == 2 | line == 7 | line == (noLines - 1))
+                {
+                    for (int col = 0; col < formWidth; col++)
+                    {
+                        WriteAt("-", startCol + col, startRow + line);
+
+                    }
+                }
+                else
+                {
+                    WriteAt("|", startCol, startRow + line);
+                    WriteAt("|", startCol + formWidth - 1, startRow + line);
+                }
+            }
+            WriteAt("SEARCH AN ACCOUNT", startCol + 4, startRow + 1);
+            WriteAt("ENTER THE DETAILS", startCol + 6, startRow + 3);
+            WriteAt("Account Number: ", startCol + 6, startRow + 5);
+            Console.ReadKey();
+
+        }
+
+        public void DepositScreen(int noLines, int formWidth, int startRow, int startCol)
+        {
+
+            Console.Clear();
+            origRow = Console.CursorTop;
+            origCol = Console.CursorLeft;
+
+            for (int line = 0; line < noLines; line++)
+            {
+                if (line == 0 | line == 2 | line == 7 | line == (noLines - 1))
+                {
+                    for (int col = 0; col < formWidth; col++)
+                    {
+                        WriteAt("-", startCol + col, startRow + line);
+
+                    }
+                }
+                else
+                {
+                    WriteAt("|", startCol, startRow + line);
+                    WriteAt("|", startCol + formWidth - 1, startRow + line);
+                }
+            }
+            WriteAt("DEPOSIT", startCol + 4, startRow + 1);
+            WriteAt("ENTER THE DETAILS", startCol + 6, startRow + 3);
+            WriteAt("Account Number: ", startCol + 6, startRow + 5);
+            WriteAt("Account: ", startCol + 6, startRow + 6);
+            Console.ReadKey();
+
         }
 
         //Method to print strings at a specific position in the console string 
