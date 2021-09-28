@@ -1,12 +1,13 @@
-﻿using System;
+﻿using DotNetAssignment1_31927.Models;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DotNetAssignment1_31927
 {
-
 
     class UserInterface {
 
@@ -16,6 +17,66 @@ namespace DotNetAssignment1_31927
 
         int[,] loginFieldPos = new int[2, 2];
         string[] loginUserInputs = new string[2];
+
+
+        //Checks if Account exists
+        public bool FindAccount(string accountNumber) {
+
+            string[] files = Directory.GetFiles(@"C:/Users/Akask/source/repos/DotNetAssignment1_31927/Accounts/", "*.txt");
+            foreach (var file in files)
+            {
+                if (file == ("C:/Users/Akask/source/repos/DotNetAssignment1_31927/Accounts/"+ accountNumber + ".txt")) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        //Authentication Method 
+        public bool CheckPassword(string username, string password)
+        {
+            string usernameFromFile = "";
+            string passwordFromFile = ""; 
+            string line;
+            int count = 0;
+
+            try
+            {
+                //Pass the file path and file name to the StreamReader constructor
+                StreamReader sr = new StreamReader("C:\\Users\\Akask\\source\\repos\\DotNetAssignment1_31927\\Credentials\\login.txt"); // Make dynamic
+                //Read the first line of text
+                line = sr.ReadLine();
+                
+                while (line != null)
+                {
+                    if (count == 0)
+                    {
+                        usernameFromFile = line;
+                    }
+                    else if (count == 1)
+                    {
+                        passwordFromFile = sr.ReadLine();
+                    }
+                    else {
+                        line = null;
+                    }
+                    count++;
+                }
+                //close the file
+                sr.Close();
+               
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception: " + e.Message);
+            }
+            
+            return username.CompareTo(usernameFromFile) == 0 && password.CompareTo(passwordFromFile) == 0;
+
+        }
+
 
         //Method to create login screen
         public void LoginScreen(int noLines, int formWidth, int startRow, int startCol) {
@@ -58,7 +119,7 @@ namespace DotNetAssignment1_31927
                     loginUserInputs[field] = Console.ReadLine();
                 }
 
-                if (loginUserInputs[0].CompareTo("Andrew") == 0 && loginUserInputs[1].CompareTo("Password") == 0)
+                if (CheckPassword(loginUserInputs[0], loginUserInputs[1]))
                 {
 
                     WriteAt("Valid Credentials!... Please press enter", startCol, noLines + 2);
@@ -245,11 +306,16 @@ namespace DotNetAssignment1_31927
             WriteAt("SEARCH AN ACCOUNT", startCol + 4, startRow + 1);
             WriteAt("ENTER THE DETAILS", startCol + 6, startRow + 3);
             WriteAt("Account Number: ", startCol + 6, startRow + 5);
-            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-            if (keyInfo.Key == ConsoleKey.Escape)
+            string accountNumber = Console.ReadLine();
+
+            if (accountNumber == "n")
             {
                 MainScreen(13, 40, 2, 10);
             }
+            else if (accountNumber == "y") {
+                SearchAccountScreen(7, 40, 2, 10);
+            }
+
 
         }
 
@@ -415,7 +481,7 @@ namespace DotNetAssignment1_31927
         static void Main(string[] args)
         {
             UserInterface ConsoleInterface = new UserInterface();
-            
+
             ConsoleInterface.LoginScreen(10, 40, 2, 10);
             Console.ReadKey();
         }
