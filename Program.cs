@@ -20,17 +20,57 @@ namespace DotNetAssignment1_31927
 
 
         //Checks if Account exists
-        public bool FindAccount(string accountNumber) {
+        public AccountModel FindAccount(string accountNumber) {
 
             string[] files = Directory.GetFiles(@"C:/Users/Akask/source/repos/DotNetAssignment1_31927/Accounts/", "*.txt");
+
+            AccountModel accountModel = new AccountModel();
+
             foreach (var file in files)
             {
-                if (file == ("C:/Users/Akask/source/repos/DotNetAssignment1_31927/Accounts/"+ accountNumber + ".txt")) {
-                    return true;
+                string dir = "C:/Users/Akask/source/repos/DotNetAssignment1_31927/Accounts/" + accountNumber + ".txt";
+                if (file == dir) {
+
+                    accountModel.AccountNumber = accountNumber;
+
+                    StreamReader sr = new StreamReader(dir);
+                    //Read the first line of text
+
+                    string line = sr.ReadLine();
+
+                    while (line != null)
+                    {
+                        string[] value = line.Split(':');
+
+                        switch (value[0])
+                        {
+                            case "FirstName":
+                                accountModel.FirstName = value[1];
+                                break;
+                            case "LastName":
+                                accountModel.LastName = value[1];
+                                break;
+                            case "Address":
+                                accountModel.Address = value[1];
+                                break;
+                            case "Phone":
+                                accountModel.Phone = int.Parse(value[1]);
+                                break;
+                            case "Amount":
+                                accountModel.Amount = int.Parse(value[1]);
+                                break;
+                            default:
+                                break;
+                        }
+                        line = sr.ReadLine();
+                    }
+                    //close the file
+                    sr.Close();
+                    return accountModel;
                 }
             }
 
-            return false;
+            return null;
         }
 
 
@@ -312,8 +352,12 @@ namespace DotNetAssignment1_31927
             {
                 MainScreen(13, 40, 2, 10);
             }
-            else if (accountNumber == "y") {
+            else if (accountNumber == "y")
+            {
                 SearchAccountScreen(7, 40, 2, 10);
+            }
+            else {
+                FindAccount(accountNumber);
             }
 
 
