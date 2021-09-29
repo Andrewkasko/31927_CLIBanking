@@ -3,13 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DotNetAssignment1_31927
 {
 
-    class UserInterface {
+    class UserInterface : Transactions 
+    {
 
         protected static int origRow;
         protected static int origCol;
@@ -19,14 +21,84 @@ namespace DotNetAssignment1_31927
         string[] loginUserInputs = new string[2];
 
 
-        public int CreateAccount(AccountModel accountModel) {
+        public bool DeleteAccount(string accountNumber)
+        {
+            string fileName = @"C:\Users\Akask\source\repos\DotNetAssignment1_31927\Accounts\" + accountNumber + ".txt";
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+                return true; //Account deleted
+            }
+            return false; // Account not found 
+        }
 
-            
+
+        public bool EmailCheck(AccountModel accountModel) {
+
+            if (FindAccount(accountModel.AccountNumber) != null)
+            {
+                MailMessage mail = new MailMessage("akaskaniotis@gmail.com", accountModel.Email);   // From,  To
+                SmtpClient client = new SmtpClient();
+                client.Port = 25;
+                client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                client.UseDefaultCredentials = false;
+                client.Host = "smtp.google.com";
+                mail.Subject = accountModel.AccountNumber;
+
+                System.Net.Mail.Attachment attachment;
+                attachment = new System.Net.Mail.Attachment("C:\\Users\\Akask\\source\\repos\\DotNetAssignment1_31927\\Accounts\\"+accountModel.AccountNumber+".txt");
+                mail.Attachments.Add(attachment);
+
+                // Set the read file as the body of the message
+                mail.Body = accountModel.AccountNumber;
+
+                // Send the email
+                client.Send(mail);
+                return true;
+            }
+            return false;
+        }
+
+
+
+
+        public bool SaveAccount(AccountModel accountModel)
+        {
+
+            string fileName = @"C:\Users\Akask\source\repos\DotNetAssignment1_31927\Accounts\" + accountModel.AccountNumber + ".txt";
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+
+                using (StreamWriter sw = File.CreateText(fileName))
+                {
+                    //Write passed model
+                    sw.WriteLine("AccountNumber:{0}", accountModel.AccountNumber);
+                    sw.WriteLine("FirstName:{0}", accountModel.FirstName);
+                    sw.WriteLine("LastName:{0}", accountModel.LastName);
+                    sw.WriteLine("Address:{0}", accountModel.Address);
+                    sw.WriteLine("Phone:{0}", accountModel.Phone);
+                    sw.WriteLine("Email:{0}", accountModel.Email);
+                    sw.WriteLine("Amount:{0}", accountModel.Amount);
+
+                }
+                return true; //Account updating
+            }
+            return false; // Account not found 
+        }
+
+
+
+        public int CreateAccount(AccountModel accountModel)
+        {
+
             bool exists = true;
             int rInt;
             string fileName = @"C:\Users\Akask\source\repos\DotNetAssignment1_31927\Accounts\";
 
-            while (exists == true) {
+            //Checks if the account exists, if not, creates an account
+            while (exists == true)
+            {
                 Random r = new Random();
                 rInt = r.Next(100000, 99999999);
                 fileName = fileName + rInt + ".txt";
@@ -34,6 +106,8 @@ namespace DotNetAssignment1_31927
                 {
                     using (StreamWriter sw = File.CreateText(fileName))
                     {
+                        //Write passed model
+                        sw.WriteLine("AccountNumber:{0}", accountModel.AccountNumber);
                         sw.WriteLine("FirstName:{0}", accountModel.FirstName);
                         sw.WriteLine("LastName:{0}", accountModel.LastName);
                         sw.WriteLine("Address:{0}", accountModel.Address);
@@ -42,17 +116,49 @@ namespace DotNetAssignment1_31927
                         sw.WriteLine("Amount:{0}", accountModel.Amount);
 
                     }
-                    return rInt;
+                    return rInt; //returns the account number
                 }
             }
-            return -1;
+            return -1; // Exited with no account created
+        }
+
+
+        public bool DepositMoney(string accountNumber, int depositMoney)
+        {
+
+            string fileName = @"C:\Users\Akask\source\repos\DotNetAssignment1_31927\Accounts\" + accountNumber + ".txt";
+            if (File.Exists(fileName))
+            {
+                var account = FindAccount(accountNumber);
+                account.Amount += depositMoney;
+                return SaveAccount(account) ? true : false; // if account wasnt saved return false
+            }
+            return false; //Account not found
+        }
+
+
+        public bool WithdrawMoney(string accountNumber, int withdrawMoney)
+        {
+            string fileName = @"C:\Users\Akask\source\repos\DotNetAssignment1_31927\Accounts\" + accountNumber + ".txt";
+            if (File.Exists(fileName))
+            {
+                var account = FindAccount(accountNumber);
+
+                if (account.Amount < withdrawMoney)
+                {
+                    account.Amount -= withdrawMoney;
+                    SaveAccount(account);
+                    return true;
+                }
+            }
+            return false; //Account not found
         }
 
 
 
-
-        //Checks if Account exists
-        public AccountModel FindAccount(string accountNumber) {
+        // Checks if Account exists
+        public AccountModel FindAccount(string accountNumber)
+        {
 
             string[] files = Directory.GetFiles(@"C:/Users/Akask/source/repos/DotNetAssignment1_31927/Accounts/", "*.txt");
 
@@ -61,7 +167,8 @@ namespace DotNetAssignment1_31927
             foreach (var file in files)
             {
                 string dir = "C:/Users/Akask/source/repos/DotNetAssignment1_31927/Accounts/" + accountNumber + ".txt";
-                if (file == dir) {
+                if (file == dir)
+                {
 
                     accountModel.AccountNumber = accountNumber;
 
@@ -76,6 +183,9 @@ namespace DotNetAssignment1_31927
 
                         switch (value[0])
                         {
+                            case "AccountNumber":
+                                accountModel.AccountNumber = value[1];
+                                break;
                             case "FirstName":
                                 accountModel.FirstName = value[1];
                                 break;
@@ -98,6 +208,7 @@ namespace DotNetAssignment1_31927
                     }
                     //close the file
                     sr.Close();
+                    accountModel.AccountNumber = accountNumber;
                     return accountModel;
                 }
             }
@@ -109,21 +220,16 @@ namespace DotNetAssignment1_31927
         //Authentication Method 
         public bool CheckPassword(string username, string password)
         {
+
+        
+
+            var account = FindAccount("123456");
+            var result = DepositMoney("123456", 888);
+
             string usernameFromFile = "";
-            string passwordFromFile = ""; 
+            string passwordFromFile = "";
             string line;
             int count = 0;
-
-
-            AccountModel accountModel = new AccountModel();
-            accountModel.FirstName = "A";
-            accountModel.LastName = "B";
-            accountModel.Address = "C";
-            accountModel.Phone = 410589423;
-            accountModel.Email = "Akaskaniotis@gmail.com";
-            accountModel.Amount = 111;
-
-            int accountNumber = CreateAccount(accountModel);
 
             try
             {
@@ -131,7 +237,7 @@ namespace DotNetAssignment1_31927
                 StreamReader sr = new StreamReader("C:\\Users\\Akask\\source\\repos\\DotNetAssignment1_31927\\Credentials\\login.txt"); // Make dynamic
                 //Read the first line of text
                 line = sr.ReadLine();
-                
+
                 while (line != null)
                 {
                     if (count == 0)
@@ -142,33 +248,36 @@ namespace DotNetAssignment1_31927
                     {
                         passwordFromFile = sr.ReadLine();
                     }
-                    else {
+                    else
+                    {
                         line = null;
                     }
                     count++;
                 }
                 //close the file
                 sr.Close();
-               
+
             }
             catch (Exception e)
             {
                 Console.WriteLine("Exception: " + e.Message);
             }
-            
+
             return username.CompareTo(usernameFromFile) == 0 && password.CompareTo(passwordFromFile) == 0;
 
         }
 
 
         //Method to create login screen
-        public void LoginScreen(int noLines, int formWidth, int startRow, int startCol) {
+        public void LoginScreen(int noLines, int formWidth, int startRow, int startCol)
+        {
 
             Console.Clear();
             origRow = Console.CursorTop;
             origCol = Console.CursorLeft;
 
-            for(int line = 0; line < noLines; line++) {
+            for (int line = 0; line < noLines; line++)
+            {
                 if (line == 0 | line == 2 | line == (noLines - 1))
                 {
                     for (int col = 0; col < formWidth; col++)
@@ -177,7 +286,8 @@ namespace DotNetAssignment1_31927
 
                     }
                 }
-                else {
+                else
+                {
                     WriteAt("|", startCol, startRow + line);
                     WriteAt("|", startCol + formWidth - 1, startRow + line);
                 }
@@ -186,7 +296,8 @@ namespace DotNetAssignment1_31927
             WriteAt("Login To Start", startCol + 10, startRow + 4);
 
             int item = 0;
-            foreach (string fieldName in loginWindowFields) {
+            foreach (string fieldName in loginWindowFields)
+            {
                 WriteAt(fieldName, startCol + 6, startRow + 6 + item);
                 loginFieldPos[item, 1] = Console.CursorTop;
                 loginFieldPos[item, 0] = Console.CursorLeft;
@@ -206,11 +317,11 @@ namespace DotNetAssignment1_31927
                 {
 
                     WriteAt("Valid Credentials!... Please press enter", startCol, noLines + 2);
-                   // Console.ReadKey();
+                    // Console.ReadKey();
                     ConsoleKeyInfo keyInfo = Console.ReadKey(true);
                     if (keyInfo.Key == ConsoleKey.Enter)
                     {
-                        
+
                         //Here is your enter key pressed!
                         MainScreen(13, 40, 2, 10);
                     }
@@ -225,7 +336,8 @@ namespace DotNetAssignment1_31927
         }
 
 
-        public void HomeScreen(int noLines, int formWidth, int startRow, int startCol) {
+        public void HomeScreen(int noLines, int formWidth, int startRow, int startCol)
+        {
 
             Console.Clear();
             origRow = Console.CursorTop;
@@ -255,7 +367,8 @@ namespace DotNetAssignment1_31927
 
 
         //MAIN SCREEN
-        public void MainScreen(int noLines, int formWidth, int startRow, int startCol) {
+        public void MainScreen(int noLines, int formWidth, int startRow, int startCol)
+        {
 
             Console.Clear();
             origRow = Console.CursorTop;
@@ -289,7 +402,8 @@ namespace DotNetAssignment1_31927
             //Console.ReadKey();
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
-            switch (keyInfo.Key) { 
+            switch (keyInfo.Key)
+            {
                 case ConsoleKey.D1:
                     CreateNewAccountScreen(11, 40, 2, 10);
                     break;
@@ -319,7 +433,7 @@ namespace DotNetAssignment1_31927
             if (keyInfo.Key == ConsoleKey.Enter)
             {
 
-                MainScreen(13, 40, 2, 10);  
+                MainScreen(13, 40, 2, 10);
             }
         }
 
@@ -399,7 +513,8 @@ namespace DotNetAssignment1_31927
             {
                 SearchAccountScreen(7, 40, 2, 10);
             }
-            else {
+            else
+            {
                 FindAccount(accountNumber);
             }
 
@@ -551,12 +666,15 @@ namespace DotNetAssignment1_31927
 
 
         //Method to print strings at a specific position in the console string 
-        protected void WriteAt(string s, int col, int row) {
-            try {
+        protected void WriteAt(string s, int col, int row)
+        {
+            try
+            {
                 Console.SetCursorPosition(origCol + col, origRow + row);
                 Console.Write(s);
             }
-            catch (ArgumentOutOfRangeException e) {
+            catch (ArgumentOutOfRangeException e)
+            {
                 Console.Clear();
                 Console.WriteLine(e.Message);
             }
