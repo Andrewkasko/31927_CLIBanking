@@ -10,7 +10,10 @@ using System.Threading.Tasks;
 namespace DotNetAssignment1_31927
 {
 
-    class UserInterface : Transactions 
+
+    //TODO: Get source file location for paths
+
+    class UserInterface 
     {
 
         protected static int origRow;
@@ -19,6 +22,10 @@ namespace DotNetAssignment1_31927
 
         int[,] loginFieldPos = new int[2, 2];
         string[] loginUserInputs = new string[2];
+
+        string[] createNewAccountFields = { "First Name: ", "Last Name: ", "Address: ", "Phone: ", "Email: "};
+        int[,] createNewAccountPos = new int[5, 5];
+        string[] createNewAccountInputs = new string[5];
 
 
         public bool DeleteAccount(string accountNumber)
@@ -107,7 +114,7 @@ namespace DotNetAssignment1_31927
                     using (StreamWriter sw = File.CreateText(fileName))
                     {
                         //Write passed model
-                        sw.WriteLine("AccountNumber:{0}", accountModel.AccountNumber);
+                        sw.WriteLine("AccountNumber:{0}", rInt);
                         sw.WriteLine("FirstName:{0}", accountModel.FirstName);
                         sw.WriteLine("LastName:{0}", accountModel.LastName);
                         sw.WriteLine("Address:{0}", accountModel.Address);
@@ -463,17 +470,80 @@ namespace DotNetAssignment1_31927
             }
             WriteAt("CREATE A NEW ACCOUNT", startCol + 4, startRow + 1);
             WriteAt("ENTER THE DETAILS", startCol + 6, startRow + 3);
-            WriteAt("First Name: ", startCol + 6, startRow + 5);
-            WriteAt("Last Name: ", startCol + 6, startRow + 6);
-            WriteAt("Address: ", startCol + 6, startRow + 7);
-            WriteAt("Phone: ", startCol + 6, startRow + 8);
-            WriteAt("Email: ", startCol + 6, startRow + 9);
+            //WriteAt("First Name: ", startCol + 6, startRow + 5);
+            //WriteAt("Last Name: ", startCol + 6, startRow + 6);
+            //WriteAt("Address: ", startCol + 6, startRow + 7);
+            //WriteAt("Phone: ", startCol + 6, startRow + 8);
+            //WriteAt("Email: ", startCol + 6, startRow + 9);
 
-            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-            if (keyInfo.Key == ConsoleKey.Escape)
+            // string[] createNewAccountFields = { "First Name: ", "Last Name: ", "Address: ", "Phone: ", "Email: "};
+            //int[,] createNewAccountPos = new int[5, 5];
+            //string[] createNewAccountInputs = new string[5];
+
+            int item = 0;
+            foreach (string fieldName in createNewAccountFields)
             {
-                MainScreen(13, 40, 2, 10);
+                WriteAt(fieldName, startCol + 6, startRow + 5 + item);
+                createNewAccountPos[item, 1] = Console.CursorTop;
+                createNewAccountPos[item, 0] = Console.CursorLeft;
+                item++;
             }
+
+
+            //ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+            //if (keyInfo.Key == ConsoleKey.Escape)
+            //{
+            //    MainScreen(13, 40, 2, 10);
+            //}
+
+            do
+            {
+                int newAccountNumber;
+
+                //Get User inputs
+                for (int field = 0; field < item; field++)
+                {
+                    Console.SetCursorPosition(createNewAccountPos[field, 0], createNewAccountPos[field, 1]);
+                    createNewAccountInputs[field] = Console.ReadLine();
+                }
+
+                if (createNewAccountInputs[0] != null && createNewAccountInputs[1] != null && 
+                    createNewAccountInputs[2] != null && createNewAccountInputs[3] != null && 
+                    createNewAccountInputs[4] != null) 
+                {
+                    AccountModel account = new AccountModel();
+                    account.FirstName = createNewAccountInputs[0];
+                    account.LastName = createNewAccountInputs[1];
+                    account.Address = createNewAccountInputs[2];
+                    account.Phone = int.Parse(createNewAccountInputs[3]);
+                    account.Email = createNewAccountInputs[4];
+
+                    newAccountNumber = CreateAccount(account);
+                }
+
+                //if (CheckPassword(createNewAccountInputs[0], loginUserInputs[1]))
+                //{
+
+                //    WriteAt("Valid Credentials!... Please press enter", startCol, noLines + 2);
+
+                //    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                //    if (keyInfo.Key == ConsoleKey.Enter)
+                //    {
+
+                //        //Here is your enter key pressed!
+                //        //MainScreen(13, 40, 2, 10);
+                //    }
+                //    break;
+                //}
+                //else
+                //{
+                //    WriteAt("Invalid Credentials", startCol, noLines + 2);
+                //}
+
+            } while (true);
+            //Console.ReadKey();
+
+
 
         }
 
