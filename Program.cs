@@ -19,6 +19,38 @@ namespace DotNetAssignment1_31927
         string[] loginUserInputs = new string[2];
 
 
+        public int CreateAccount(AccountModel accountModel) {
+
+            
+            bool exists = true;
+            int rInt;
+            string fileName = @"C:\Users\Akask\source\repos\DotNetAssignment1_31927\Accounts\";
+
+            while (exists == true) {
+                Random r = new Random();
+                rInt = r.Next(100000, 99999999);
+                fileName = fileName + rInt + ".txt";
+                if (!File.Exists(fileName))
+                {
+                    using (StreamWriter sw = File.CreateText(fileName))
+                    {
+                        sw.WriteLine("FirstName:{0}", accountModel.FirstName);
+                        sw.WriteLine("LastName:{0}", accountModel.LastName);
+                        sw.WriteLine("Address:{0}", accountModel.Address);
+                        sw.WriteLine("Phone:{0}", accountModel.Phone);
+                        sw.WriteLine("Email:{0}", accountModel.Email);
+                        sw.WriteLine("Amount:{0}", accountModel.Amount);
+
+                    }
+                    return rInt;
+                }
+            }
+            return -1;
+        }
+
+
+
+
         //Checks if Account exists
         public AccountModel FindAccount(string accountNumber) {
 
@@ -81,6 +113,17 @@ namespace DotNetAssignment1_31927
             string passwordFromFile = ""; 
             string line;
             int count = 0;
+
+
+            AccountModel accountModel = new AccountModel();
+            accountModel.FirstName = "A";
+            accountModel.LastName = "B";
+            accountModel.Address = "C";
+            accountModel.Phone = 410589423;
+            accountModel.Email = "Akaskaniotis@gmail.com";
+            accountModel.Amount = 111;
+
+            int accountNumber = CreateAccount(accountModel);
 
             try
             {
