@@ -1,0 +1,7 @@
+First Name|Andrew
+Last Name|K
+Address|UTS, Building 2
+Phone|410589423
+Email|Akaskaniotis@gmail.com
+AccountNo|56458333
+Balance|5
