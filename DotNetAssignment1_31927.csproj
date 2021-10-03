@@ -43,8 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Account.cs" />
-    <Compile Include="Authentication.cs" />
     <Compile Include="Interface\IAccountActionRepository.cs" />
     <Compile Include="Interface\IAuthenticationRepository.cs" />
     <Compile Include="Models\AccountModel.cs" />
@@ -52,7 +50,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\AccountActionRepository.cs" />
     <Compile Include="Repository\AuthenticationRepository.cs" />
-    <Compile Include="Transactions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

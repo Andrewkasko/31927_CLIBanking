@@ -1,0 +1,12 @@
+First Name|Andrew
+Last Name|Kasko
+Address|8 Uts
+Phone|410589423
+Email|Akaskaniotis@gmail.com
+AccountNo|43873997
+Balance|1090
+Last transaction 1|Deposit $20
+Last transaction 2|Withdraw $10
+Last transaction 3|Deposit $10
+Last transaction 4|Withdraw $8
+Last transaction 5|Deposit $88

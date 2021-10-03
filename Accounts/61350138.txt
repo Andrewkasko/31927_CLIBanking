@@ -1,0 +1,12 @@
+First Name|Andrew
+Last Name|Kasko
+Address|10 Uts
+Phone|410589423
+Email|Akaskaniotis@gmail.com
+AccountNo|61350138
+Balance|0
+Last transaction 1|
+Last transaction 2|
+Last transaction 3|
+Last transaction 4|
+Last transaction 5|

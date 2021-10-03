@@ -1,0 +1,12 @@
+First Name|Andrew
+Last Name|Kaskaniotis
+Address|10 water
+Phone|410589423
+Email|Akaskaniotis@gmail.com
+AccountNo|25478834
+Balance|0
+Last transaction 1|
+Last transaction 2|
+Last transaction 3|
+Last transaction 4|
+Last transaction 5|

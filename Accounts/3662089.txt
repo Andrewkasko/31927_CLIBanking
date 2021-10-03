@@ -1,0 +1,7 @@
+First Name|A
+Last Name|K
+Address|Address2
+Phone|410589423
+Email|Akaskaniotis@gmail.com
+AccountNo|3662089
+Balance|0

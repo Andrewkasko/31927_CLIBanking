@@ -15,5 +15,6 @@ namespace DotNetAssignment1_31927.Interface
         bool EmailStatement(AccountModel accountModel);
         AccountModel FindAccount(string accountNumber);
         bool DeleteAccount(string accountNumber);
+        AccountModel addTransactionDetails(AccountModel account, string transactionDetails);
     }
 }

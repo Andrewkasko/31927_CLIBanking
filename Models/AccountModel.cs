@@ -15,5 +15,10 @@ namespace DotNetAssignment1_31927.Models
         public int Phone { get; set; }
         public string Email { get; set; }
         public int Amount { get; set; }
+        public string Transaction1 { get; set; }
+        public string Transaction2 { get; set; }
+        public string Transaction3 { get; set; }
+        public string Transaction4 { get; set; }
+        public string Transaction5 { get; set; }
     }
 }
