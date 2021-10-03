@@ -241,6 +241,7 @@ namespace DotNetAssignment1_31927.Repository
             }
             else
             {
+                //Shuffles transactions if five already exist
                 account.Transaction5 = account.Transaction4;
                 account.Transaction4 = account.Transaction3;
                 account.Transaction3 = account.Transaction2;

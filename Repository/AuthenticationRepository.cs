@@ -43,6 +43,7 @@ namespace DotNetAssignment1_31927.Repository
 
             foreach ((string, string) credential in credentialsFromFile)
             {
+                //Compares the password
                 if (username == credential.Item1 && password == credential.Item2)
                 {
                     return true;
