@@ -1013,11 +1013,75 @@ namespace DotNetAssignment1_31927
             WriteAt("DELETE AN ACCOUNT", startCol + 4, startRow + 1);
             WriteAt("ENTER THE DETAILS", startCol + 6, startRow + 3);
             WriteAt("Account Number: ", startCol + 6, startRow + 5);
-            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-            if (keyInfo.Key == ConsoleKey.Escape)
+
+            int item = 0;
+            foreach (string fieldName in searchAccountFields)
             {
-                MainScreen(13, 40, 2, 10);
+                WriteAt(fieldName, startCol + 6, startRow + 5 + item);
+                searchAccountPos[item, 0] = Console.CursorLeft;
+                item++;
             }
+
+
+
+            do
+            {
+                AccountModel foundAccount;
+
+                //Get User inputs
+                for (int field = 0; field < item; field++)
+                {
+                    Console.SetCursorPosition(32, 7);
+                    searchAccountInputs[field] = Console.ReadLine();
+                }
+
+                foundAccount = FindAccount(searchAccountInputs[0]);
+
+                if (foundAccount != null)
+                {
+                    WriteAt("Account Found! The statement is displayed below... ", startCol, startRow + 8);
+                    PrintAccountDetails(13, 40, 1, -50, foundAccount);
+
+                    WriteAt("Delete (y/n)?", -50, noLines + 8);
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                    if (keyInfo.Key == ConsoleKey.Y)
+                    {
+                        if (DeleteAccount(foundAccount.AccountNumber))
+                        {
+                            WriteAt("Account Deleted!... Press enter to go to the main menu.", -50, noLines + 10);
+                            ConsoleKeyInfo keyInfo2 = Console.ReadKey(true);
+                            if (keyInfo2.Key == ConsoleKey.Enter)
+                            {
+                                MainScreen(13, 40, 2, 10);
+                                return;
+                            }
+                        }
+
+                    }
+                    else if (keyInfo.Key == ConsoleKey.N)
+                    {
+                        DeleteAccountScreen(7, 40, 2, 10);
+
+                    }
+                }
+                else
+                {
+                    WriteAt("Account not found! Search another account (y/n)?", startCol, startRow + 8);
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                    if (keyInfo.Key == ConsoleKey.Y)
+                    {
+                        DeleteAccountScreen(7, 40, 2, 10);
+                    }
+                    else if (keyInfo.Key == ConsoleKey.N)
+                    {
+                        MainScreen(13, 40, 2, 10);
+                    }
+
+                }
+
+
+            } while (true);
+
 
         }
 
