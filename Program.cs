@@ -343,11 +343,13 @@ namespace DotNetAssignment1_31927
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
                 if (keyInfo.Key == ConsoleKey.Y)
                 {
+                    int i = 0;
+                    bool phoneInt = int.TryParse(createNewAccountInputs[3], out i);
                     //Checks for correct email address
                     if (createNewAccountInputs[0] != null && createNewAccountInputs[1] != null &&
                         createNewAccountInputs[2] != null && createNewAccountInputs[3] != null &&
                         createNewAccountInputs[4] != null && (createNewAccountInputs[4].Contains("@gmail.com") || createNewAccountInputs[4].Contains("@outlook.com") || createNewAccountInputs[4].Contains("@uts.edu.au"))
-                        && createNewAccountInputs[3].Length <= 10)
+                        && createNewAccountInputs[3].Length <= 10 && phoneInt ==true)
                     {
                         AccountModel account = new AccountModel();
                         account.FirstName = createNewAccountInputs[0];
