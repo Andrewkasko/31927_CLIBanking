@@ -249,10 +249,9 @@ namespace DotNetAssignment1_31927
         public bool CheckPassword(string username, string password)
         {
 
-            string usernameFromFile = "";
-            string passwordFromFile = "";
+            List<(string, string)> credentialsFromFile = new List<(string, string)>();
             string line;
-            int count = 0;
+            string[] tempCredentials;
 
             try
             {
@@ -263,19 +262,10 @@ namespace DotNetAssignment1_31927
 
                 while (line != null)
                 {
-                    if (count == 0)
-                    {
-                        usernameFromFile = line;
-                    }
-                    else if (count == 1)
-                    {
-                        passwordFromFile = sr.ReadLine();
-                    }
-                    else
-                    {
-                        line = null;
-                    }
-                    count++;
+                    tempCredentials = line.Split('|');
+                    credentialsFromFile.Add((tempCredentials[0], tempCredentials[1]));
+
+                    line = sr.ReadLine();
                 }
                 //close the file
                 sr.Close();
@@ -286,8 +276,12 @@ namespace DotNetAssignment1_31927
                 Console.WriteLine("Exception: " + e.Message);
             }
 
-            return username.CompareTo(usernameFromFile) == 0 && password.CompareTo(passwordFromFile) == 0;
-
+            foreach ((string,string)credential in credentialsFromFile) {
+                if (username == credential.Item1 && password == credential.Item2) {
+                    return true;
+                }
+            }
+            return false;
         }
 
 
