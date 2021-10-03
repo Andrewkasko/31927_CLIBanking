@@ -27,6 +27,18 @@ namespace DotNetAssignment1_31927
         int[,] createNewAccountPos = new int[5, 5];
         string[] createNewAccountInputs = new string[5];
 
+        string[] searchAccountFields = { "Account Number: " };
+        int[,] searchAccountPos = new int[1, 1];
+        string[] searchAccountInputs = new string[1];
+
+        string[] depositWithdrawAccountFields = {"Amount: $" };
+        int[,] depositWithdrawAccountPos = new int[1, 1];
+        string[] depositWithdrawAccountInputs = new string[1];
+
+        string[] findAccountFields = { "Account Number: "};
+        int[,] findAccountPos = new int[1, 1];
+        string[] findAccountInputs = new string[1];
+
 
         public bool DeleteAccount(string accountNumber)
         {
@@ -44,23 +56,29 @@ namespace DotNetAssignment1_31927
 
             if (FindAccount(accountModel.AccountNumber) != null)
             {
+
+               
+
                 MailMessage mail = new MailMessage("akaskaniotis@gmail.com", accountModel.Email);   // From,  To
+                //mail.Dispose();
+
                 SmtpClient client = new SmtpClient();
+
                 client.Port = 25;
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                client.UseDefaultCredentials = false;
+                client.UseDefaultCredentials = true;
                 client.Host = "smtp.google.com";
                 mail.Subject = accountModel.AccountNumber;
 
                 System.Net.Mail.Attachment attachment;
-                attachment = new System.Net.Mail.Attachment("C:\\Users\\Akask\\source\\repos\\DotNetAssignment1_31927\\Accounts\\"+accountModel.AccountNumber+".txt");
+                attachment = new System.Net.Mail.Attachment("C:\\Users\\Akask\\source\\repos\\DotNetAssignment1_31927\\Accounts\\" + accountModel.AccountNumber + ".txt");
                 mail.Attachments.Add(attachment);
 
                 // Set the read file as the body of the message
                 mail.Body = accountModel.AccountNumber;
 
-                // Send the email
                 client.Send(mail);
+
                 return true;
             }
             return false;
@@ -151,7 +169,7 @@ namespace DotNetAssignment1_31927
             {
                 var account = FindAccount(accountNumber);
 
-                if (account.Amount < withdrawMoney)
+                if (account.Amount > withdrawMoney)
                 {
                     account.Amount -= withdrawMoney;
                     SaveAccount(account);
@@ -205,6 +223,9 @@ namespace DotNetAssignment1_31927
                             case "Phone":
                                 accountModel.Phone = int.Parse(value[1]);
                                 break;
+                            case "Email":
+                                accountModel.Email = value[1];
+                                break;
                             case "Amount":
                                 accountModel.Amount = int.Parse(value[1]);
                                 break;
@@ -227,11 +248,6 @@ namespace DotNetAssignment1_31927
         //Authentication Method 
         public bool CheckPassword(string username, string password)
         {
-
-        
-
-            var account = FindAccount("123456");
-            var result = DepositMoney("123456", 888);
 
             string usernameFromFile = "";
             string passwordFromFile = "";
@@ -470,15 +486,6 @@ namespace DotNetAssignment1_31927
             }
             WriteAt("CREATE A NEW ACCOUNT", startCol + 4, startRow + 1);
             WriteAt("ENTER THE DETAILS", startCol + 6, startRow + 3);
-            //WriteAt("First Name: ", startCol + 6, startRow + 5);
-            //WriteAt("Last Name: ", startCol + 6, startRow + 6);
-            //WriteAt("Address: ", startCol + 6, startRow + 7);
-            //WriteAt("Phone: ", startCol + 6, startRow + 8);
-            //WriteAt("Email: ", startCol + 6, startRow + 9);
-
-            // string[] createNewAccountFields = { "First Name: ", "Last Name: ", "Address: ", "Phone: ", "Email: "};
-            //int[,] createNewAccountPos = new int[5, 5];
-            //string[] createNewAccountInputs = new string[5];
 
             int item = 0;
             foreach (string fieldName in createNewAccountFields)
@@ -572,21 +579,67 @@ namespace DotNetAssignment1_31927
             }
             WriteAt("SEARCH AN ACCOUNT", startCol + 4, startRow + 1);
             WriteAt("ENTER THE DETAILS", startCol + 6, startRow + 3);
-            WriteAt("Account Number: ", startCol + 6, startRow + 5);
-            string accountNumber = Console.ReadLine();
 
-            if (accountNumber == "n")
+            int item = 0;
+            foreach (string fieldName in searchAccountFields)
             {
-                MainScreen(13, 40, 2, 10);
+                WriteAt(fieldName, startCol + 6, startRow + 5 + item);
+                searchAccountPos[item, 0] = Console.CursorLeft;
+                item++;
             }
-            else if (accountNumber == "y")
+
+
+
+            do
             {
-                SearchAccountScreen(7, 40, 2, 10);
-            }
-            else
-            {
-                FindAccount(accountNumber);
-            }
+                AccountModel foundAccount;
+
+                //Get User inputs
+                for (int field = 0; field < item; field++)
+                {
+                    Console.SetCursorPosition(32, 7);
+                    searchAccountInputs[field] = Console.ReadLine();
+                }
+
+                if (searchAccountInputs[0] != null )
+                {
+                    foundAccount = FindAccount(searchAccountInputs[0]);
+
+                    if (foundAccount != null)
+                    {
+                        WriteAt("Account found!", startCol, startRow + 8);
+                        PrintAccountDetails(13, 40, 1, -15, foundAccount);
+
+                        WriteAt("Check another account (y/n)?", -15, noLines + 8);
+                        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                        if (keyInfo.Key == ConsoleKey.Y)
+                        {
+                            SearchAccountScreen(7, 40, 2, 10);
+                        }
+                        else if (keyInfo.Key == ConsoleKey.N)
+                        {
+                            MainScreen(13, 40, 2, 10);
+                        }
+                    }
+                    else {
+                        WriteAt("Account not found!", startCol, startRow + 8);
+                        WriteAt("Check another account (y/n)?", startCol, startRow + 9);
+                        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                        if (keyInfo.Key == ConsoleKey.Y)
+                        {
+                            SearchAccountScreen(7, 40, 2, 10);
+                        }
+                        else if (keyInfo.Key == ConsoleKey.N)
+                        {
+                            MainScreen(13, 40, 2, 10);
+                        }
+                    }
+                }
+
+            } while (true);
+
+
+
 
 
         }
@@ -614,15 +667,68 @@ namespace DotNetAssignment1_31927
                     WriteAt("|", startCol + formWidth - 1, startRow + line);
                 }
             }
-            WriteAt("DEPOSIT", startCol + 4, startRow + 1);
+            WriteAt("DEPOSIT", startCol + 16, startRow + 1);
             WriteAt("ENTER THE DETAILS", startCol + 6, startRow + 3);
-            WriteAt("Account Number: ", startCol + 6, startRow + 5);
-            WriteAt("Amount: ", startCol + 6, startRow + 6);
-            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-            if (keyInfo.Key == ConsoleKey.Escape)
+
+            int item = 0;
+            foreach (string fieldName in findAccountFields)
             {
-                MainScreen(13, 40, 2, 10);
+                WriteAt(fieldName, startCol + 6, startRow + 5 + item);
+                findAccountPos[item, 0] = Console.CursorLeft;
+                item++;
             }
+
+            WriteAt("Amount: $", startCol + 6, startRow + 6);
+
+            do
+            {
+                //Get User inputs
+                for (int field = 0; field < item; field++)
+                {
+                    Console.SetCursorPosition(32, 7);
+                    findAccountInputs[field] = Console.ReadLine();
+                }
+
+                if (FindAccount(findAccountInputs[0]) != null)
+                {
+                    WriteAt("Account found! Enter the amount...", startCol, noLines + 2);
+                    Console.SetCursorPosition(25, 8);
+                    string depositAmount = Console.ReadLine();
+                    int depositAmountInt = int.Parse(depositAmount);
+                    bool result = DepositMoney(findAccountInputs[0], depositAmountInt);
+
+                    if (result)
+                    {
+                        WriteAt("Deposit Successful! Press Enter to go to the main menu.", startCol, noLines + 3);
+                        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                        if (keyInfo.Key == ConsoleKey.Enter)
+                        {
+
+                            //Here is your enter key pressed!
+                            MainScreen(13, 40, 2, 10);
+                        }
+                    }
+                    else 
+                    {
+                        WriteAt("Deposit Unsuccessful!", startCol, noLines + 3);
+                    }
+
+                }
+                else
+                {
+                    WriteAt("Account not found!", startCol, noLines + 2);
+                    WriteAt("Retry (y/n)?", startCol, noLines + 3);
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                    if (keyInfo.Key == ConsoleKey.Y)
+                    {
+                        DepositScreen(8, 40, 2, 10);
+                    }
+                    else {
+                        MainScreen(13, 40, 2, 10);
+                    }
+                }
+            } while (true);
+
 
         }
 
@@ -651,15 +757,95 @@ namespace DotNetAssignment1_31927
                     WriteAt("|", startCol + formWidth - 1, startRow + line);
                 }
             }
-            WriteAt("WITHDRAW", startCol + 4, startRow + 1);
+            WriteAt("WITHDRAW", startCol + 16, startRow + 1);
             WriteAt("ENTER THE DETAILS", startCol + 6, startRow + 3);
-            WriteAt("Account Number: ", startCol + 6, startRow + 5);
-            WriteAt("Amount: ", startCol + 6, startRow + 6);
-            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-            if (keyInfo.Key == ConsoleKey.Escape)
+
+
+
+            //string[] depositWithdrawAccountFields = { "Account Number: ", "Amount: $" };
+            //int[,] depositWithdrawAccountPos = new int[2, 2];
+            //string[] depositWithdrawAccountInputs = new string[2];
+
+
+            WriteAt("WITHDRAW", startCol + 16, startRow + 1);
+            WriteAt("ENTER THE DETAILS", startCol + 6, startRow + 3);
+
+            int item = 0;
+            foreach (string fieldName in findAccountFields)
             {
-                MainScreen(13, 40, 2, 10);
+                WriteAt(fieldName, startCol + 6, startRow + 5 + item);
+                findAccountPos[item, 0] = Console.CursorLeft;
+                item++;
             }
+
+            WriteAt("Amount: $", startCol + 6, startRow + 6);
+
+            do
+            {
+                //Get User inputs
+                for (int field = 0; field < item; field++)
+                {
+                    Console.SetCursorPosition(32, 7);
+                    findAccountInputs[field] = Console.ReadLine();
+                }
+
+                AccountModel accountModel = FindAccount(findAccountInputs[0]);
+
+                if (accountModel != null)
+                {
+                    WriteAt("Account found! Enter the amount...", startCol, noLines + 2);
+                    Console.SetCursorPosition(25, 8);
+                    string withdrawAmount = Console.ReadLine();
+                    int withdrawAmountInt = int.Parse(withdrawAmount);
+                    if (accountModel.Amount > withdrawAmountInt)
+                    {
+
+                        if (WithdrawMoney(findAccountInputs[0], withdrawAmountInt))
+                        {
+                            WriteAt("Withdraw Successful! Press Enter to go to the main menu.", startCol, noLines + 3);
+                            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                            if (keyInfo.Key == ConsoleKey.Enter)
+                            {
+
+                                //Here is your enter key pressed!
+                                MainScreen(13, 40, 2, 10);
+                            }
+                        }
+                        else
+                        {
+                            WriteAt("Withdraw Unsuccessful!", startCol, noLines + 3);
+                        }
+                    }
+                    else {
+                        WriteAt("Amount less than balance", startCol, noLines + 2);
+                        WriteAt("Retry (y/n)?", startCol, noLines + 3);
+                        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                        if (keyInfo.Key == ConsoleKey.Y)
+                        {
+                            WithdrawScreen(8, 40, 2, 10);
+                        }
+                        else
+                        {
+                            MainScreen(13, 40, 2, 10);
+                        }
+                    }
+
+                }
+                else
+                {
+                    WriteAt("Account not found!", startCol, noLines + 2);
+                    WriteAt("Retry (y/n)?", startCol, noLines + 3);
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                    if (keyInfo.Key == ConsoleKey.Y)
+                    {
+                        WithdrawScreen(8, 40, 2, 10);
+                    }
+                    else
+                    {
+                        MainScreen(13, 40, 2, 10);
+                    }
+                }
+            } while (true);
 
         }
 
@@ -690,13 +876,116 @@ namespace DotNetAssignment1_31927
             WriteAt("STATEMENT", startCol + 4, startRow + 1);
             WriteAt("ENTER THE DETAILS", startCol + 6, startRow + 3);
             WriteAt("Account Number: ", startCol + 6, startRow + 5);
-            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-            if (keyInfo.Key == ConsoleKey.Escape)
+
+            int item = 0;
+            foreach (string fieldName in searchAccountFields)
             {
-                MainScreen(13, 40, 2, 10);
+                WriteAt(fieldName, startCol + 6, startRow + 5 + item);
+                searchAccountPos[item, 0] = Console.CursorLeft;
+                item++;
             }
 
+
+
+            do
+            {
+                AccountModel foundAccount;
+
+                //Get User inputs
+                for (int field = 0; field < item; field++)
+                {
+                    Console.SetCursorPosition(32, 7);
+                    searchAccountInputs[field] = Console.ReadLine();
+                }
+
+                foundAccount = FindAccount(searchAccountInputs[0]);
+
+                if (foundAccount != null)
+                {
+                    WriteAt("Account Found! The statement is displayed below... ", startCol, startRow + 8);
+                    PrintAccountDetails(13, 40, 1, -50, foundAccount);
+
+                    WriteAt("Email Statement (y/n)?", -50, noLines + 8);
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                    if (keyInfo.Key == ConsoleKey.Y)
+                    {
+                        if (EmailCheck(foundAccount))
+                        {
+                            WriteAt("Email sent successfully!", -50, noLines + 10);
+                            ConsoleKeyInfo keyInfo2 = Console.ReadKey(true);
+                            if (keyInfo2.Key == ConsoleKey.Enter)
+                            {
+                                MainScreen(13, 40, 2, 10);
+                                return;
+                            }
+                        }
+
+                    }
+                    else if (keyInfo.Key == ConsoleKey.N)
+                    {
+                        MainScreen(13, 40, 2, 10);
+                    }
+                }
+                else {
+                    WriteAt("Account not found! Search another account (y/n)?", startCol, startRow + 8);
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                    if (keyInfo.Key == ConsoleKey.Y)
+                    {
+                        AccountStatementScreen(7, 40, 2, 10);
+
+                    }
+                    else if (keyInfo.Key == ConsoleKey.N)
+                    {
+                        MainScreen(13, 40, 2, 10);
+                    }
+
+                }
+
+
+            } while (true);
+
+
+
         }
+
+
+        public void PrintAccountDetails(int noLines, int formWidth, int startRow, int startCol, AccountModel account)
+        {
+
+            origRow = Console.CursorTop;
+            origCol = Console.CursorLeft;
+
+            for (int line = 0; line < noLines; line++)
+            {
+                if (line == 0 | line == 2 | line == (noLines - 1))
+                {
+                    for (int col = 0; col < formWidth; col++)
+                    {
+                        WriteAt("-", startCol + col, startRow + line);
+
+                    }
+                }
+                else
+                {
+                    WriteAt("|", startCol, startRow + line);
+                    WriteAt("|", startCol + formWidth - 1, startRow + line);
+                }
+            }
+            WriteAt("SIMPLE BANKING SYSTEM", startCol + 4, startRow + 1);
+            WriteAt("Account Statement", startCol + 6, startRow + 3);
+            WriteAt("Account No: "+account.AccountNumber, startCol + 6, startRow + 5);
+            WriteAt("Account Balance: $" + account.Amount, startCol + 6, startRow + 6);
+            WriteAt("First Name: " + account.FirstName, startCol + 6, startRow + 7);
+            WriteAt("Last Name: " + account.LastName, startCol + 6, startRow + 8);
+            WriteAt("Address: " + account.Address, startCol + 6, startRow + 9);
+            WriteAt("Phone: " + account.Phone, startCol + 6, startRow + 10);
+            WriteAt("Email: " + account.Email, startCol + 6, startRow + 11);
+
+
+
+        }
+
+
 
         public void DeleteAccountScreen(int noLines, int formWidth, int startRow, int startCol)
         {
