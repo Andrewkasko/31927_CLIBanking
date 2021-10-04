@@ -118,7 +118,7 @@ namespace DotNetAssignment1_31927.Repository
                 mail.Attachments.Dispose();
                 mail.Dispose();
             }
-            return true;\
+            return true;
         }
 
         public AccountModel FindAccount(string accountNumber)
