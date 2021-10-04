@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
@@ -86,7 +87,6 @@ namespace DotNetAssignment1_31927.Repository
             //Sent from my mailbox to the account
             MailMessage mail = new MailMessage("akaskaniotis@gmail.com", accountModel.Email);   // From,  To//mail.Dispose();
             System.Net.Mail.Attachment attachment;
-
             try
             {
                 using (SmtpClient client = new SmtpClient())
@@ -98,19 +98,18 @@ namespace DotNetAssignment1_31927.Repository
                     client.UseDefaultCredentials = true;
                     client.Host = "smtp.google.com";
                     mail.Subject = accountModel.AccountNumber;
-                    attachment = new System.Net.Mail.Attachment(path);
-                    mail.Attachments.Add(attachment);
 
                     // Set the read file as the body of the message
-                    mail.Body = accountModel.AccountNumber;
+                    mail.Body = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Accounts\" + accountModel.AccountNumber + ".txt"); ;
 
                     //client.Send(mail);
                     try
                     {
                         client.Send(mail);
                     }
-                    catch (Exception e) {
-                      //  Console.WriteLine("Exception: {0}", e);
+                    catch (Exception e)
+                    {
+                        //  Console.WriteLine("Exception: {0}", e);
                     }
                 }
             }
@@ -119,7 +118,7 @@ namespace DotNetAssignment1_31927.Repository
                 mail.Attachments.Dispose();
                 mail.Dispose();
             }
-            return true;
+            return true;\
         }
 
         public AccountModel FindAccount(string accountNumber)
