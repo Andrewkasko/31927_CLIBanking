@@ -1,7 +1,0 @@
-First Name|Andrew
-Last Name|Kaskaniotis
-Address|10 Water creek Blvd, Sydney, Australia
-Phone|410589423
-Email|Akaskaniotis@gmail.com
-AccountNo|123456
-Balance|1037726
