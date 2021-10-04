@@ -17,7 +17,7 @@ namespace DotNetAssignment1_31927.Repository
 
             bool exists = true;
             int rInt;
-            string fileName = @"C:\Users\Akask\source\repos\DotNetAssignment1_31927\Accounts\";
+            string fileName = AppDomain.CurrentDomain.BaseDirectory + @"\Accounts\";
 
             //Checks if the account exists, if not, creates an account
             while (exists == true)
@@ -53,7 +53,7 @@ namespace DotNetAssignment1_31927.Repository
 
         public bool SaveAccount(AccountModel accountModel)
         {
-            string fileName = @"C:\Users\Akask\source\repos\DotNetAssignment1_31927\Accounts\" + accountModel.AccountNumber + ".txt";
+            string fileName = AppDomain.CurrentDomain.BaseDirectory + @"\Accounts\" + accountModel.AccountNumber + ".txt";
             if (File.Exists(fileName))
             {
                 File.Delete(fileName);
@@ -92,12 +92,13 @@ namespace DotNetAssignment1_31927.Repository
                 using (SmtpClient client = new SmtpClient())
                 {
                     //Mail Settings
+                    string path = AppDomain.CurrentDomain.BaseDirectory + @"\Accounts\" + accountModel.AccountNumber + ".txt";
                     client.Port = 25;
                     client.DeliveryMethod = SmtpDeliveryMethod.Network;
                     client.UseDefaultCredentials = true;
                     client.Host = "smtp.google.com";
                     mail.Subject = accountModel.AccountNumber;
-                    attachment = new System.Net.Mail.Attachment("C:\\Users\\Akask\\source\\repos\\DotNetAssignment1_31927\\Accounts\\" + accountModel.AccountNumber + ".txt");
+                    attachment = new System.Net.Mail.Attachment(path);
                     mail.Attachments.Add(attachment);
 
                     // Set the read file as the body of the message
@@ -123,8 +124,8 @@ namespace DotNetAssignment1_31927.Repository
 
         public AccountModel FindAccount(string accountNumber)
         {
-
-            string[] files = Directory.GetFiles(@"C:/Users/Akask/source/repos/DotNetAssignment1_31927/Accounts/", "*.txt");
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"\Accounts\";
+            string[] files = Directory.GetFiles(path, "*.txt");
 
             AccountModel accountModel = new AccountModel();
 
@@ -135,7 +136,7 @@ namespace DotNetAssignment1_31927.Repository
 
             foreach (var file in files)
             {
-                string dir = "C:/Users/Akask/source/repos/DotNetAssignment1_31927/Accounts/" + accountNumber + ".txt";
+                string dir = path + accountNumber + ".txt";
                 if (file == dir)
                 {
 
@@ -205,7 +206,7 @@ namespace DotNetAssignment1_31927.Repository
 
         public bool DeleteAccount(string accountNumber)
         {
-            string fileName = @"C:\Users\Akask\source\repos\DotNetAssignment1_31927\Accounts\" + accountNumber + ".txt";
+            string fileName = AppDomain.CurrentDomain.BaseDirectory + @"\Accounts\" + accountNumber + ".txt";
             if (File.Exists(fileName))
             {
                 File.Delete(fileName);

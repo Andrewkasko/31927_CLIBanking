@@ -21,7 +21,7 @@ namespace DotNetAssignment1_31927.Repository
             try
             {
                 //Pass the file path and file name to the StreamReader constructor
-                StreamReader sr = new StreamReader("C:\\Users\\Akask\\source\\repos\\DotNetAssignment1_31927\\Credentials\\login.txt"); // Make dynamic
+                StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + @"\Credentials\login.txt"); // Make dynamic
                 //Read the first line of text
                 line = sr.ReadLine();
 

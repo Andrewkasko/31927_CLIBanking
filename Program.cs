@@ -47,7 +47,7 @@ namespace DotNetAssignment1_31927
         //Used to deposit money into an account
         public bool DepositMoney(string accountNumber, int depositMoney)
         {
-            string fileName = @"C:\Users\Akask\source\repos\DotNetAssignment1_31927\Accounts\" + accountNumber + ".txt";
+            string fileName = AppDomain.CurrentDomain.BaseDirectory + @"\Accounts\" + accountNumber + ".txt";
             //Checks if file exists first
             if (File.Exists(fileName))
             {
@@ -61,7 +61,7 @@ namespace DotNetAssignment1_31927
 
         public bool WithdrawMoney(string accountNumber, int withdrawMoney)
         {
-            string fileName = @"C:\Users\Akask\source\repos\DotNetAssignment1_31927\Accounts\" + accountNumber + ".txt";
+            string fileName = AppDomain.CurrentDomain.BaseDirectory + @"\Accounts\" + accountNumber + ".txt";
             if (File.Exists(fileName))
             {
                 var account = Acc.FindAccount(accountNumber);
